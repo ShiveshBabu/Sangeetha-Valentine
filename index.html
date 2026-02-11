@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Valentine's Day Sangeetha ❤️</title>
+  <style>
+    body{
+      margin:0; font-family:Poppins,Arial,sans-serif;
+      background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+      display:flex; justify-content:center; align-items:center;
+      min-height:100vh; overflow:hidden;
+    }
+    .card{
+      background:#fff; padding:30px; border-radius:20px;
+      width:90%; max-width:420px; text-align:center;
+      box-shadow:0 20px 40px rgba(0,0,0,.15);
+      position:relative; z-index:2;
+    }
+    h1,h2,h3{margin:10px 0}
+    button{
+      background:#ff4d6d; color:#fff; border:none;
+      padding:12px 22px; border-radius:30px;
+      margin:8px; font-size:1em; cursor:pointer;
+    }
+    button:disabled{opacity:.5; cursor:not-allowed}
+    .answer{display:none; color:#b30059; font-weight:bold; margin-top:10px}
+    .proposal{display:none}
+    .music-btn{
+      position:fixed; bottom:20px; right:20px;
+      width:55px; height:55px; border-radius:50%;
+      background:#ff4d6d; color:#fff; font-size:1.4em;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; z-index:3;
+    }
+    .floating-heart{
+      position:fixed; bottom:-20px; animation:floatUp 6s linear forwards;
+      font-size:22px;
+    }
+    @keyframes floatUp{from{transform:translateY(0)}to{transform:translateY(-110vh);opacity:0}}
+    .yes-btn{animation:bounce 1.5s infinite}
+    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  </style>
+</head>
+<body>
+
+<audio id="bgMusic" loop>
+  <source src="love-song.mp3" type="audio/mpeg">
+</audio>
+<div class="music-btn" onclick="toggleMusic()">❤️</div>
+
+<div class="card">
+  <h1>Happy Valentine's Day Sangeetha ❤️</h1>
+  <p>Un smile paatha udane en heart happy mode-ku pogum 😌💖</p>
+
+  <div id="riddle"></div>
+  <button id="answerBtn" onclick="showAnswer()">Answer sollu 💌</button>
+  <div id="answer" class="answer"></div>
+  <button id="nextBtn" onclick="nextRiddle()" disabled>Next Surprise 💕</button>
+
+  <div id="proposal" class="proposal">
+    <h2>💍 En Manasukulla Oru Question</h2>
+    <p>Sangeetha… nee en life-la vandha naal lendhu ellame beautiful-aa maariduchu 💗</p>
+    <h3>En kooda whole life nadandhu varuvaaya? ❤️</h3>
+    <button class="yes-btn" onclick="sayYes()">YES 💖</button>
+    <button class="yes-btn" onclick="sayYes()">OF COURSE 😍</button>
+    <div id="yesMsg" style="display:none;margin-top:10px;color:#b30059">
+      I knew it 🥹💞 En life full-aa ippo nee dhan d Baby. I LOVE YOU TO CORE d En Cute BommaKutyy...
+      <br/><br/>
+      <button onclick="restartLove()">Replay Our Love 💕</button>
+    </div>
+  </div>
+
+  <div style="margin-top:20px;color:#666">Always yours — <b>SHIVESH</b></div>
+</div>
+
+<script>
+const riddles = [
+  { q:"Oru naal paakala-na miss aagum, paathaalum pothaama irukkum. Adhu yaaru?", a:"Nee dhan, Sangeetha 😘" },
+  { q:"En future-ku reason, en smile-ku secret yaaru?", a:"Nee mattum dhan 💕" },
+  { q:"Nan kela vizhuven, ana enakku adi padathu. In fact, nan vizhurapo smile panni kittu thaan vizhuven. Adhu enna?", a:"Falling in love with you 💖" },
+  { q:"En kitta neraiya space iruku, ana unna thavira vera yaraiyum ulla vara vida matten. Adhu enna?", a:"My Heart ❤️" },
+  { q:"Nan engu ponalum, kadaisila un kitta thaan vandhu nippen. Nee enna map-ah? Illai, nee en _____.", a:"Home (En Veedu) 🏠" },
+  { q:"Idhu unaku sondhamana peru thaan, ana future-la unna vida nan thaan adhai neraiya vaati koopiduven. What is it?", a:"UN PER THAN D – SANGEETHA SHIVESH 💞" },
+  { q:"Nee thoonkgura munnadiyum nee enakku venum, thoongi ezhundha udaneyum nee venum… ana thookathula thaan unna romba miss pannuven. Why?", a:"Because I want you in my bed, not just in my dreams 😌" },
+  { q:"Adhu romba soft-ah irukum, nan thotta udane hot-ah aayidum. Adhu enna?", a:"Your skin (Un udambu) 🔥" },
+  { q:"Nan un kitta varumpo light-ah tight-ah irukum, ana ulla vandhuta romba warm-ah comfort-ah irukum. What is it?", a:"My Hug 🤗" },
+  { q:"Nan un mela mela eruna, unakku vali irukaadhu… ana moochu mattum vaangum. Why?", a:"Because we are Heavy in love 💗" },
+  { q:"Unakku indha dress romba nalla iruku, ana unna Outfit of the night la thaan pakkanum. What is the outfit?", a:"Nothing 😉" }
+];
+
+let index = 0;
+let answerRevealed = false;
+
+const riddleEl = document.getElementById('riddle');
+const answerEl = document.getElementById('answer');
+const proposalEl = document.getElementById('proposal');
+const music = document.getElementById('bgMusic');
+const nextBtn = document.getElementById('nextBtn');
+
+function loadRiddle(){
+  riddleEl.innerText = riddles[index].q;
+  answerEl.innerText = riddles[index].a;
+  answerEl.style.display = 'none';
+  answerRevealed = false;
+  nextBtn.disabled = true;
+}
+
+function showAnswer(){
+  answerEl.style.display = 'block';
+  answerRevealed = true;
+  nextBtn.disabled = false;
+}
+
+function nextRiddle(){
+  if(!answerRevealed) return;
+
+  if(index < riddles.length - 1){
+    index++;
+    loadRiddle();
+  } else {
+    riddleEl.style.display = 'none';
+    document.getElementById('answerBtn').style.display='none';
+    nextBtn.style.display='none';
+    answerEl.style.display='none';
+
+    proposalEl.style.display = 'block';
+
+    music.currentTime = 40; // 🎵 beat drop
+    music.volume = 0.4;
+
+    launchFireworks();
+  }
+}
+
+function toggleMusic(){
+  if(music.paused){ music.volume=0.25; music.play(); }
+  else{ music.pause(); }
+}
+
+function sayYes(){
+  document.getElementById('yesMsg').style.display='block';
+  launchFireworks();
+}
+
+function restartLove(){
+  index = 0;
+  proposalEl.style.display = 'none';
+  document.getElementById('answerBtn').style.display='inline-block';
+  nextBtn.style.display='inline-block';
+  riddleEl.style.display='block';
+  loadRiddle();
+}
+
+function launchFireworks(){
+  for(let i=0;i<25;i++){
+    const f=document.createElement('div');
+    f.className='floating-heart';
+    f.innerText = Math.random()>0.5 ? '💖' : '🎆';
+    f.style.left = Math.random()*100 + 'vw';
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),6000);
+  }
+}
+
+loadRiddle();
+</script>
+</body>
+</html>
