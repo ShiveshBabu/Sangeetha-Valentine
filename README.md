@@ -1,2 +1,0 @@
-# Sangeetha-Valentine
-My Love 
